@@ -1,3 +1,4 @@
+const { count } = require('../models/product.model');
 const productModel = require('../models/product.model');
 const productRepository=require('./../repositories/productRepository')
 
@@ -22,10 +23,23 @@ const formatErrors=(errors)=>{
 
 const get=async (req,res)=>{
     try{
-        const data=await productRepository.get()
+        const options={
+            pageNumber:req.params.page||1,
+            pageSize:req.params.limit||10,
+        }
+        const data=await productRepository.get(options)
+        const count=await productRepository.getCount()
+        const response={
+            metadata:{
+                count:count,
+                pages:Math.ceil(count/options.pageSize)
+            },data
+        }
+        
         res.status(200)
-        res.json(data)
+        res.json(response)
     }catch(err){
+        console.error(err)
         res.status(500)
         res.send('Internal Server Error...')
     }

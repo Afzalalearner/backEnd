@@ -1,8 +1,13 @@
 const productModel = require('./../models/product.model')
 
-const get = () => {
+const get = (options) => {
+    const {pageSize,pageNumber}=options
     const projections = { _id: 1, __v: 0, createdDate: 0 }
-    return productModel.find({}, projections)
+    return productModel.find({}, projections).skip((pageNumber-1)*pageSize).limit(pageSize)
+}
+
+const getCount=()=>{
+    return productModel.count()
 }
 
 const post = (data) => {
@@ -54,4 +59,5 @@ module.exports = {
     put,
     patch,
     remove,
+    getCount
 }

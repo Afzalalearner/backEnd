@@ -26,6 +26,8 @@ const get=async (req,res)=>{
         const options={
             pageNumber:req.params.page||1,
             pageSize:req.params.limit||10,
+            sort:req.query.sort||'updatedDate',
+            direction:req.query.direction||'desc'
         }
         const data=await productRepository.get(options)
         const count=await productRepository.getCount()

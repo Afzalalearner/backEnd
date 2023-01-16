@@ -1,12 +1,44 @@
 const productModel = require('./../models/product.model')
 
-const get = (options) => {
-    const {pageSize,pageNumber}=options
-    const projections = { _id: 1, __v: 0, createdDate: 0 }
-    return productModel.find({}, projections).skip((pageNumber-1)*pageSize).limit(pageSize)
+const getSortBy = (sort) => {
+    switch (sort.toLowerCase()) {
+        case 'category': return 'category';
+        case 'subCategory': return 'subCategory';
+        case 'brand': return 'brand';
+        case 'model': return 'model';
+        case 'price': return 'price';
+        case 'discount': return 'discount';
+        default: return 'updatedDate'
+
+    }
 }
 
-const getCount=()=>{
+const getSortDirection = (direction) => {
+    switch (direction.toLowerCase()) {
+        case 'asc':
+        case 'ascending': return 1;
+
+        case 'dsc':
+        case 'desc':
+        case 'descending': return -1;
+
+        default: return -1
+    }
+}
+
+
+const get = (options) => {
+    const { pageSize, pageNumber, sort, direction } = options
+    const sortByField = getSortBy(sort)
+    const sortByDirection = getSortDirection(direction)
+    const projections = { _id: 1, __v: 0, createdDate: 0 }
+    return productModel.find({}, projections)
+                       .skip((pageNumber - 1) * pageSize)
+                       .limit(pageSize)
+                       .sort({ [sortByField]: sortByDirection })
+}
+
+const getCount = () => {
     return productModel.count()
 }
 
@@ -22,12 +54,12 @@ const getById = (id) => {
 
 const put = (id, data) => {
     delete data._id;
-    const options={runValidators:true}
+    const options = { runValidators: true }
 
     return productModel.updateOne({ _id: id }, {
         $set: {
-            category:data.category,
-            subCategory:data.subCategory,
+            category: data.category,
+            subCategory: data.subCategory,
             brand: data.brand,
             model: data.model,
             description: data.description,
@@ -35,21 +67,21 @@ const put = (id, data) => {
             discount: data.discount,
             inStock: data.inStock
         }
-    },options)
+    }, options)
 }
 
-const patch=(id,data)=>{
+const patch = (id, data) => {
     delete data._id;
-    const updatedObj={}
-    const options={runValidators:true}
-    for (let key in data){
-        updatedObj[key]=data[key]
+    const updatedObj = {}
+    const options = { runValidators: true }
+    for (let key in data) {
+        updatedObj[key] = data[key]
     }
-    return productModel.updateOne({_id:id},{$set:updatedObj},options)
+    return productModel.updateOne({ _id: id }, { $set: updatedObj }, options)
 }
 
-const remove=(id)=>{
-    return productModel.deleteOne({_id:id})
+const remove = (id) => {
+    return productModel.deleteOne({ _id: id })
 }
 
 module.exports = {

@@ -18,6 +18,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/fullapp',
 
 app.listen(port, () => console.log(`Server Listening on port ${port}...`))
 app.use(express.json())
+app.use(express.static('uploads/'))
 app.use('/',homeRouter)
 app.use('/api/products',productRouter)
 

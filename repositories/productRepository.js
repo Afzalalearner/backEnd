@@ -28,18 +28,31 @@ const getSortDirection = (direction) => {
 
 
 const get = (options) => {
-    const { pageSize, pageNumber, sort, direction } = options
+    const { pageSize, pageNumber, sort, direction, categorySearch, subCategorySearch,productSearch } = options
+
     const sortByField = getSortBy(sort)
     const sortByDirection = getSortDirection(direction)
+
     const projections = { _id: 1, __v: 0, createdDate: 0 }
-    return productModel.find({}, projections)
-                       .skip((pageNumber - 1) * pageSize)
-                       .limit(pageSize)
-                       .sort({ [sortByField]: sortByDirection })
+
+    const filter = {
+        $and: [{ category: new RegExp(categorySearch, 'i') },{ subCategory: new RegExp(subCategorySearch, 'i') },
+        { $or: [{ brand: new RegExp(productSearch, 'i') }, { model: new RegExp(productSearch, 'i') }] }]
+    }
+    return productModel.find(filter, projections)
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort({ [sortByField]: sortByDirection })
 }
 
-const getCount = () => {
-    return productModel.count()
+const getCount = (options) => {
+    const { productSearch, categorySearch,subCategorySearch } = options
+
+    const filter = {
+        $and: [{ category: new RegExp(categorySearch, 'i') },{ subCategory: new RegExp(subCategorySearch, 'i') },
+        { $or: [{ brand: new RegExp(productSearch, 'i') }, { model: new RegExp(productSearch, 'i') }] }]
+    }
+    return productModel.count(filter)
 }
 
 const post = (data) => {

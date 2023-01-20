@@ -27,15 +27,23 @@ const get=async (req,res)=>{
             pageNumber:req.params.page||1,
             pageSize:req.params.limit||10,
             sort:req.query.sort||'updatedDate',
-            direction:req.query.direction||'desc'
+            direction:req.query.direction||'desc',
+            categorySearch:req.query.categorySearch||'',
+            subCategorySearch:req.query.subCategorySearch||'',
+            productSearch:req.query.productSearch||''
         }
         const data=await productRepository.get(options)
-        const count=await productRepository.getCount()
+        const count=await productRepository.getCount(options)
+        const transformedData=data.map(product=>{return {...product._doc,
+        image:product._doc.image?`${req.protocol}://${req.get('host')}/${product._doc.image}`:''
+        
+    }})
         const response={
             metadata:{
                 count:count,
                 pages:Math.ceil(count/options.pageSize)
-            },data
+            },
+            data:transformedData
         }
         
         res.status(200)

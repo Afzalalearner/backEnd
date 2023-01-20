@@ -35,8 +35,9 @@ const get=async (req,res)=>{
         const data=await productRepository.get(options)
         const count=await productRepository.getCount(options)
         const transformedData=data.map(product=>{return {...product._doc,
-        image:product._doc.image?`${req.protocol}://${req.get('host')}/${product._doc.image}`:''
         
+        image:product._doc.image?`${req.protocol}://${req.get('host')}/${product._doc.image}`:''
+            
     }})
         const response={
             metadata:{

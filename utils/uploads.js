@@ -10,10 +10,12 @@ if(!fs.existsSync(contentDir)){
 const storage=multer.diskStorage({
     destination:'uploads/',
     filename:function(req,file,cb){
-        const prefix=Date.now()+'_'+Math.round(Math.random()*1E9)
-        const nameOfFile=prefix+'_'+file.originalname
-        req.body.image=file?nameOfFile:''
-        cb(null,nameOfFile)
+        
+           const prefix=Date.now()+'_'+Math.round(Math.random()*1E9)
+           const nameOfFile=prefix+'_'+file.originalname
+           req.body.image=nameOfFile
+           cb(null,nameOfFile)
+        
     }
 })
 const upload=multer({

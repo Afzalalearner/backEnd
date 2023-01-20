@@ -5,13 +5,15 @@ const mongoose = require('mongoose')
 
 const homeRouter=require('./routers/homeRouter')
 const productRouter=require('./routers/productRouter')
+const config=require('./config/index')
+const { dbconStr } = require('./config/index')
 
 const port = process.env.port || 5000;
 
 
 mongoose.set('strictQuery', true);
 
-mongoose.connect('mongodb://127.0.0.1:27017/fullapp',
+mongoose.connect(config.dbconStr,
     () => console.log('Connected to DB...'),
     (err) => console.error(err)
 )

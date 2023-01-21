@@ -5,8 +5,11 @@ const mongoose = require('mongoose')
 
 const homeRouter=require('./routers/homeRouter')
 const productRouter=require('./routers/productRouter')
+const userRouter=require('./routers/userRouter')
 const config=require('./config/index')
 const { dbconStr } = require('./config/index')
+
+const auth=require('./utils/auth')
 
 const port = process.env.port || 5000;
 
@@ -22,7 +25,12 @@ app.listen(port, () => console.log(`Server Listening on port ${port}...`))
 app.use(express.json())
 app.use(express.static('uploads/'))
 app.use('/',homeRouter)
+app.use('/api/users',userRouter)
+
+app.use(auth.tokenauth)
+
 app.use('/api/products',productRouter)
+
 
 app.get('*', (req, res) => {
     res.status(400)

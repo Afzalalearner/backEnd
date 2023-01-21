@@ -1,5 +1,6 @@
 const { count } = require('../models/product.model');
 const productModel = require('../models/product.model');
+const logger = require('../utils/appLogger');
 const productRepository=require('./../repositories/productRepository')
 
 const hasValidationError=(err)=>{
@@ -50,7 +51,7 @@ const get=async (req,res)=>{
         res.status(200)
         res.json(response)
     }catch(err){
-        console.error(err)
+        logger.info(err)
         res.status(500)
         res.send('Internal Server Error...')
     }

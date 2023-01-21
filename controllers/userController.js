@@ -1,6 +1,7 @@
 const userRepository = require('./../repositories/userRepository')
 const crypto = require('./../utils/crypto')
 const jwt = require('jsonwebtoken')
+const logger = require('../utils/appLogger')
 
 
 // const get = async (req, res) => {
@@ -45,6 +46,7 @@ const signup = async (req, res) => {
             res.status(201)
             res.send()
         } else {
+            logger.info()
             res.status(400)
             res.send('Password and Confirm Password Does not match')
 
@@ -52,12 +54,13 @@ const signup = async (req, res) => {
 
     } catch (err) {
         if (userAlreadyExists(err)) {
+            logger.error(err)
             res.status(409)
             res.json('User Already Exists')
             return
         }
 
-
+        logger.error(err)
         res.status(500)
         res.send('Internal Server Error')
     }
@@ -83,6 +86,7 @@ const signin = async (req, res) => {
             res.status(200)
             res.json({username:user.username,token:token})
         } else {
+            logger.info()
 
             res.status(401)
             res.send("Invalid Username or Password")
@@ -90,6 +94,7 @@ const signin = async (req, res) => {
 
 
     } catch (err) {
+        logger.error(err)
         res.status(500)
         res.send('Internal Server Error')
     }

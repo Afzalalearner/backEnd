@@ -9,7 +9,7 @@ const productSchema=new mongoose.Schema({
     price:{type:Number},
     discount:{type:Number},
     inStock:{type:Boolean},
-    image:{type:Array},
+    image:{type:String},
     createdDate:{type:Date},
     updatedDate:{type:Date,default:Date.now}
 })

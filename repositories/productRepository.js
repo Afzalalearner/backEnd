@@ -34,7 +34,7 @@ const get = (options) => {
     const sortByDirection = getSortDirection(direction)
 
     const projections = { _id: 1, __v: 0, createdDate: 0 }
-
+//try fixing this bug...what if user enter only category search and search but not sub category search
     const filter = {
         $and: [{ category: new RegExp(categorySearch, 'i') },{ subCategory: new RegExp(subCategorySearch, 'i') },
         { $or: [{ brand: new RegExp(productSearch, 'i') }, { model: new RegExp(productSearch, 'i') }] }]

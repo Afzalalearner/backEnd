@@ -1,30 +1,48 @@
-const jwt=require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
-function tokenauth(req,res,next){
-    try{
+function authorize(req, res, next) {
+    if (req.role === 2) {
+        next()
+    }
+    else {
+        res.status(403)
+        res.send('Forbidden')
+        return
+    }
+}
 
-        if(!req.headers.authorization){
+function tokenauth(req, res, next) {
+    try {
+
+        if (!req.headers.authorization) {
             res.status(401)
             res.send('Unauthorized1')
             return
         }
-        const token=req.headers.authorization.split(' ');
+        const token = req.headers.authorization.split(' ');
+
+        const authtoken = token[1]
+
+        const valid = jwt.verify(authtoken, 'secret')
         
-        const authtoken=token[1]
-        
-        const valid=jwt.verify(authtoken,'secret')
-        
-        if(valid){next()}
-        else{
+
+        if (valid) {
+            req.role = valid.role;
+            next()
+        }
+        else {
             res.status(401)
             res.send('Unauthorized2')
-            
+
         }
-    }catch(err){
+    } catch (err) {
         res.status(401)
         res.send('Unauthorized3')
     }
 }
 
 
-module.exports={tokenauth}
+module.exports = {
+    tokenauth,
+    authorize,
+}
